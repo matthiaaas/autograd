@@ -2,6 +2,10 @@ module AutogradCalculus
 
 export Scalar, backward
 
+include("graphs.jl")
+
+using .Graphs
+
 mutable struct Scalar{T<:Real}
     value::T
     grad::T
@@ -63,32 +67,11 @@ Base.:/(a::Real, b::Scalar) = Scalar(a) / b
 Base.:inv(a::Scalar) = Base.:^(a, -1)
 
 function backward(s::Scalar)
-    function dfs()
-        visited = Set{Scalar}()
-        stack = Scalar[]
-
-        function visit(node::Scalar)
-            if node in visited
-                return
-            end
-
-            push!(visited, node)
-
-            for child in node.children
-                visit(child)
-            end
-
-            push!(stack, node)
-        end
-
-        visit(s)
-
-        return stack
-    end
+    g = Graph(s, (node::Scalar) -> node.children)
 
     s.grad = 1.0
 
-    for s in reverse(dfs())
+    for s in topological_sort(g)
         s.backward()
     end
 end
