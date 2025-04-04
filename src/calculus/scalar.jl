@@ -1,10 +1,4 @@
-module AutogradCalculus
-
-export Scalar, backward
-
-include("graphs.jl")
-
-using .Graphs
+using ..Graphs
 
 mutable struct Scalar{T<:Real}
     value::T
@@ -74,6 +68,4 @@ function backward(s::Scalar)
     for s in topological_sort(g)
         s.backward()
     end
-end
-
 end

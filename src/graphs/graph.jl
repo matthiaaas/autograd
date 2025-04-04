@@ -1,7 +1,3 @@
-module Graphs
-
-export Graph, Node, dfs, topological_sort
-
 struct Node{T}
     value::T
     children::Set{Node}
@@ -19,17 +15,28 @@ end
 Graph(root::T, get_children::Function) where {T} = Graph{T,typeof(get_children(root))}(root, get_children)
 
 function dfs(graph::Graph)
-    visited = Set{Node}()
-    stack = [graph.root]
+    visited = Set()
+    stack = [(graph.root, false)]
     results = []
 
     while !isempty(stack)
-        node = pop!(stack)
-        if !(node in visited)
-            push!(results, node)
+        node, flagged = pop!(stack)
+
+        if node in visited
+            continue
+        end
+
+        if flagged
             push!(visited, node)
-            for child in graph.get_children(node)
-                push!(stack, child)
+            push!(results, node)
+            continue
+        end
+
+        push!(stack, (node, true))
+
+        for child in graph.get_children(node)
+            if child ∉ visited
+                push!(stack, (child, false))
             end
         end
     end
@@ -39,6 +46,4 @@ end
 
 function topological_sort(graph::Graph)
     return reverse(dfs(graph))
-end
-
 end

@@ -1,8 +1,8 @@
 using Test
 
-include("../calculus.jl")
+include("../src/Autograd.jl")
 
-using .AutogradCalculus
+using .Autograd.Calculus
 
 @testset "Autograd Calculus Tests" begin
     @testset "Scalar values arithmetic" begin
@@ -22,20 +22,21 @@ using .AutogradCalculus
         @test (a * b^4 + 6 * c).value == 168.0
     end
 
-    # @testset "Backpropagation" begin
-    #     a = Scalar(2.0)
-    #     b = Scalar(3.0)
-    #     c = Scalar(1.0)
-    #     d = Scalar(4.0)
-    #     e = Scalar(5.0)
+    @testset "Backpropagation" begin
+        a = Scalar(2.0)
+        b = Scalar(3.0)
+        c = Scalar(1.0)
+        d = Scalar(4.0)
+        e = Scalar(5.0)
 
-    #     L1 = a * b + c * d + e
-    #     backward(L1)
+        L = a * b + c * d + e
+        backward(L)
 
-    #     L2 = a^2 + b - c
-    #     backward(L2)
-
-    #     @test a.grad == 3.0
-    #     @test b.grad == 2.0
-    # end
+        @test L.grad == 1.0
+        @test a.grad == b.value
+        @test b.grad == a.value
+        @test c.grad == d.value
+        @test d.grad == c.value
+        @test e.grad == 1.0
+    end
 end

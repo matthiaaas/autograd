@@ -1,7 +1,3 @@
-module ForwardModeAutodiff
-
-export Dual, autodiff
-
 # As seen in https://www.youtube.com/watch?v=QwFLA5TrviI
 
 struct Dual{T<:Real}
@@ -34,9 +30,3 @@ Base.:^(a::Dual, n::Real) = Dual(a.real^n, n * a.real^(n - 1) * a.dual)
 Base.:sin(a::Dual) = Dual(sin(a.real), cos(a.real) * a.dual)
 Base.:cos(a::Dual) = Dual(cos(a.real), -sin(a.real) * a.dual)
 Base.:exp(a::Dual) = Dual(exp(a.real), exp(a.real) * a.dual)
-
-function autodiff(f::Function, x::Real)
-    return f(Dual(x, 1.0)).dual
-end
-
-end
