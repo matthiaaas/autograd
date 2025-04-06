@@ -22,7 +22,7 @@ using .Autograd.Calculus
         @test (a * b^4 + 6 * c).value == 168.0
     end
 
-    @testset "Backpropagation" begin
+    @testset "Scalar backpropagation" begin
         a = Scalar(2.0)
         b = Scalar(3.0)
         c = Scalar(1.0)
@@ -38,5 +38,24 @@ using .Autograd.Calculus
         @test c.grad == d.value
         @test d.grad == c.value
         @test e.grad == 1.0
+    end
+
+    @testset "Tensor arithmetic" begin
+        a = Tensor([
+            1.0 2.0 3.0;
+            4.0 5.0 6.0
+        ])
+        b = Tensor([
+            2.0 3.0;
+            4.0 5.0;
+            6.0 7.0
+        ])
+
+        c = a * b
+        backward(c)
+
+        println("Tensor c: ", c)
+        println("Tensor a: ", a)
+        println("Tensor b: ", b)
     end
 end

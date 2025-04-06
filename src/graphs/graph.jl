@@ -15,9 +15,9 @@ end
 Graph(root::T, get_children::Function) where {T} = Graph{T,typeof(get_children(root))}(root, get_children)
 
 function dfs(graph::Graph)
-    visited = Set()
-    stack = [(graph.root, false)]
-    results = []
+    visited = Set{Any}()
+    stack = Vector{Tuple{Any,Bool}}([(graph.root, false)])
+    results = Vector{Any}()
 
     while !isempty(stack)
         node, flagged = pop!(stack)

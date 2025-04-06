@@ -1,6 +1,6 @@
 using Test
 
-include("../fmad.jl")
+include("../src/calculus/fmad.jl")
 
 using .ForwardModeAutodiff
 

@@ -60,6 +60,8 @@ Base.:/(a::Real, b::Scalar) = Scalar(a) / b
 
 Base.:inv(a::Scalar) = Base.:^(a, -1)
 
+Base.length(s::Scalar) = 1
+
 function backward(s::Scalar)
     g = Graph(s, (node::Scalar) -> node.children)
 
