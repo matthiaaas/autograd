@@ -56,10 +56,30 @@ Base.:-(a::Array, b::Tensor) = Tensor(a) - b
 
 Base.size(t::Tensor) = size(t.value)
 
+function Base.sum(t::Tensor)
+    y = Tensor(sum(t.value), Set{Tensor}([t]))
+
+    y.backward = () -> begin
+        t.grad += ones(size(t.value))
+    end
+
+    return y
+end
+
+function mean(t::Tensor)
+    y = Tensor(mean(t.value), Set{Tensor}([t]))
+
+    y.backward = () -> begin
+        t.grad += ones(size(t.value)) / length(t.value)
+    end
+
+    return y
+end
+
 function backward(t::Tensor)
     g = Graph(t, (node::Tensor) -> node.children)
 
-    t.grad = ones(size(t.value))
+    t.grad = ones(size(t))
 
     for t in topological_sort(g)
         t.backward()
