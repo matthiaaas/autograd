@@ -37,8 +37,17 @@ function Base.:*(a::Tensor, b::Tensor)
     y = Tensor(a.value * b.value, Set{Tensor}([a, b]))
 
     y.backward = () -> begin
-        a.grad += y.grad * transpose(b.value)
-        b.grad += transpose(a.value) * y.grad
+        if ndims(a.value) == 0
+            a.grad += sum(y.grad .* b.value)
+        else
+            a.grad += y.grad * transpose(b.value)
+        end
+
+        if ndims(b.value) == 0
+            b.grad += sum(transpose(a.value) .* y.grad)
+        else
+            b.grad += transpose(a.value) * y.grad
+        end
     end
 
     return y
