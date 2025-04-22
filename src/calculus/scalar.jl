@@ -62,6 +62,18 @@ Base.:inv(a::Scalar) = Base.:^(a, -1)
 
 Base.length(s::Scalar) = 1
 
+Base.broadcastable(s::Scalar) = Ref(s)
+
+function Base.abs(s::Scalar)
+    y = Scalar(abs(s.value), Set{Scalar}([s]))
+
+    y.backward = () -> begin
+        s.grad += sign(s.value) * y.grad
+    end
+
+    return y
+end
+
 function backward(s::Scalar)
     g = Graph(s, (node::Scalar) -> node.children)
 

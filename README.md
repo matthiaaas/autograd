@@ -1,6 +1,9 @@
 # `autograd`
 
-Autograd for scalar values using either chain rule backpropagation or forward mode autodifferentiation.
+Autograd engine for scalar or n-dimensional tensor values using either chain rule backpropagation or forward mode autodifferentiation.
+
+> [!WARNING]
+> Built for educational purposes.
 
 ## Dual Numbers & Forward Mode Automatic Differentiation
 

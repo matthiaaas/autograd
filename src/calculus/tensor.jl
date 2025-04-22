@@ -63,8 +63,21 @@ Base.:-(a::Tensor, b::Tensor) = a + (-b)
 Base.:-(a::Tensor, b::Array) = a - Tensor(b)
 Base.:-(a::Array, b::Tensor) = Tensor(a) - b
 
+Base.:(==)(a::Tensor, b::Tensor) = a.value == b.value
+Base.:(==)(a::Tensor, b::Array) = a.value == b
+Base.:(==)(a::Array, b::Tensor) = a == b.value
+Base.:(==)(a::Tensor, b::Real) = a.value == b
+Base.:(==)(a::Real, b::Tensor) = a == b.value
+
+Base.isless(a::Tensor, b::Tensor) = a.value < b.value
+Base.isless(a::Tensor, b::Array) = a.value < b
+Base.isless(a::Array, b::Tensor) = a < b.value
+Base.isless(a::Tensor, b::Real) = a.value < b
+Base.isless(a::Real, b::Tensor) = a < b.value
+
 Base.broadcastable(t::Tensor) = Ref(t)
 
+Base.ndims(t::Tensor) = ndims(t.value)
 Base.size(t::Tensor) = size(t.value)
 Base.length(t::Tensor) = length(t.value)
 
@@ -92,7 +105,7 @@ function mean(t::Tensor)
     y = Tensor(mean(t.value), Set{Tensor}([t]))
 
     y.backward = () -> begin
-        t.grad += ones(size(t)) / length(t)
+        t.grad += ones(size(t.value)) / length(t.value)
     end
 
     return y
