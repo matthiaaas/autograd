@@ -11,4 +11,6 @@ using .NN
 
 export Scalar, Tensor, Graph, dfs, topological_sort, backward
 
+export Module, Sequential, Linear
+
 end

@@ -6,18 +6,16 @@ using ..Calculus
 
 # end
 
-# struct Module
+abstract type Module end
 
-# end
+include("modules/sequential.jl")
+include("modules/linear.jl")
 
-# struct Linear{T} <: Module
-
-# end
 
 function mse(pred, target)
-    return (pred - target)
+    return (pred - target)^2
 end
 
-export mse
+export Module, Sequential, Linear
 
 end

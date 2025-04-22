@@ -79,8 +79,6 @@ using .Autograd
             end
         end
 
-        println("Final parameters: w = $(w), b = $(b)")
-
         @test all(isapprox.(w.value, true_w.value, atol=0.8))
         @test abs(loss) < 0.2
     end
