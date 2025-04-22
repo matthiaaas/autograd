@@ -65,3 +65,14 @@ loss = criterion(output, target)
 backward(loss)
 step(optimizer)
 ```
+
+## Bonus: Graphs
+
+Additionally, this library includes a thin generic `Graphs` module in functor-style, which is compatible with arbitrary _graph-like_ abstractions:
+
+```jl
+result = Tensor(1.0) * Tensor(2.0) + Tensor(0.5)
+
+g = Graph(result, (t::Tensor) -> t.children)
+operands = topological_sort(g)
+```
