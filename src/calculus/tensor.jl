@@ -59,7 +59,15 @@ Base.broadcastable(t::Tensor) = Ref(t)
 Base.size(t::Tensor) = size(t.value)
 Base.length(t::Tensor) = length(t.value)
 
-Base.abs(t::Tensor) = Tensor(abs.(t.value), Set{Tensor}([t]))
+function Base.abs(t::Tensor)
+    y = Tensor(abs.(t.value), Set{Tensor}([t]))
+
+    y.backward = () -> begin
+        t.grad += sign.(t.value) .* y.grad
+    end
+
+    return y
+end
 
 function Base.sum(t::Tensor)
     y = Tensor(sum(t.value), Set{Tensor}([t]))
