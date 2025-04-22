@@ -45,20 +45,23 @@ mse(y_hat)
 
 As seen on [PyTorch](https://pytorch.org).
 
-#### Forward pass
-
-$$
-L = w * x + b, z:= w * x
-$$
-
-#### Backpropagation
-
-$$
-\frac{\partial L}{\partial L} = 1, \frac{\partial L}{\partial z} = 1, \frac{\partial L}{\partial b} = 1
-$$
-
-$$
-\frac{\partial L}{\partial w} = \frac{\partial L}{\partial z} * \frac{\partial z}{\partial w} = x
-$$
-
 ## Framework
+
+```jl
+model = Sequential(
+    Linear(256, 128),
+    ReLU(),
+    Linear(128, 64),
+    Linear(64, 10),
+    Sigmoid()
+)
+
+criterion = CrossEntropy()
+optimizer = Adam(model)
+
+zero_grad(optimizer)
+output = model(x)
+loss = criterion(output, target)
+backward(loss)
+step(optimizer)
+```
