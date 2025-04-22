@@ -54,7 +54,12 @@ Base.:-(a::Tensor, b::Tensor) = a + (-b)
 Base.:-(a::Tensor, b::Array) = a - Tensor(b)
 Base.:-(a::Array, b::Tensor) = Tensor(a) - b
 
+Base.broadcastable(t::Tensor) = Ref(t)
+
 Base.size(t::Tensor) = size(t.value)
+Base.length(t::Tensor) = length(t.value)
+
+Base.abs(t::Tensor) = Tensor(abs.(t.value), Set{Tensor}([t]))
 
 function Base.sum(t::Tensor)
     y = Tensor(sum(t.value), Set{Tensor}([t]))
@@ -70,7 +75,7 @@ function mean(t::Tensor)
     y = Tensor(mean(t.value), Set{Tensor}([t]))
 
     y.backward = () -> begin
-        t.grad += ones(size(t.value)) / length(t.value)
+        t.grad += ones(size(t)) / length(t)
     end
 
     return y
@@ -79,7 +84,11 @@ end
 function backward(t::Tensor)
     g = Graph(t, (node::Tensor) -> node.children)
 
-    t.grad = ones(size(t))
+    if isa(t.grad, Number)
+        t.grad = one(t.value)
+    else
+        t.grad = ones(size(t.value))
+    end
 
     for t in topological_sort(g)
         t.backward()
