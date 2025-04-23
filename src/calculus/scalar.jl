@@ -58,6 +58,14 @@ Base.:/(a::Scalar, b::Scalar) = a * (b^(-1))
 Base.:/(a::Scalar, b::Real) = a / Scalar(b)
 Base.:/(a::Real, b::Scalar) = Scalar(a) / b
 
+Base.:(==)(a::Scalar, b::Scalar) = a.value == b.value
+Base.:(==)(a::Scalar, b::Real) = a == Scalar(b)
+Base.:(==)(a::Real, b::Scalar) = Scalar(a) == b
+
+Base.isless(a::Scalar, b::Scalar) = a.value < b.value
+Base.isless(a::Scalar, b::Real) = a < Scalar(b)
+Base.isless(a::Real, b::Scalar) = Scalar(a) < b
+
 Base.:inv(a::Scalar) = Base.:^(a, -1)
 
 Base.length(s::Scalar) = 1

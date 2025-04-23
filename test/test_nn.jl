@@ -1,10 +1,13 @@
 using Test
+using Random
 
 include("../src/Autograd.jl")
 
 using .Autograd
 
 @testset "Autograd NN Tests" begin
+    Random.seed!(1234)
+
     @testset "Explicit Scalar linear regression" begin
         # Dataset
         true_w = 3.5
@@ -81,5 +84,26 @@ using .Autograd
 
         @test all(isapprox.(w.value, true_w.value, atol=0.8))
         @test abs(loss) < 0.2
+    end
+
+    @testset "Linear" begin
+        model = Sequential(
+            Linear(8, 4),
+            Linear(4, 2),
+        )
+        println("Model: $(model)")
+
+        x = Tensor([1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0])
+
+        ŷ = model(x)
+        println("ŷ: $(ŷ)")
+
+        y = Tensor([1.0, 2.0])
+        loss = sum(abs(ŷ - y))
+        println("Loss: $(loss)")
+
+        backward(loss)
+
+        println("Parameters: $(parameters(model))")
     end
 end

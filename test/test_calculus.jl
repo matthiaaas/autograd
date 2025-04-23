@@ -10,16 +10,16 @@ using .Autograd.Calculus
         b = Scalar(3.0)
         c = Scalar(1.0)
 
-        @test (a + b).value == 5.0
-        @test (a - b).value == -1.0
-        @test (a * b).value == 6.0
-        @test (a / c).value == 2.0
+        @test (a + b) == 5.0
+        @test (a - b) == -1.0
+        @test (a * b) == 6.0
+        @test (a / c) == 2.0
 
-        @test (4 * a + 2.0 * b + 1).value == 15.0
-        @test (a * b + c).value == 7.0
-        @test (a^3).value == 8.0
-        @test ((a + b)^2).value == 25.0
-        @test (a * b^4 + 6 * c).value == 168.0
+        @test (4 * a + 2.0 * b + 1) == 15.0
+        @test (a * b + c) == 7.0
+        @test (a^3) == 8.0
+        @test ((a + b)^2) == 25.0
+        @test (a * b^4 + 6 * c) == 168.0
     end
 
     @testset "Scalar backpropagation" begin
@@ -33,14 +33,14 @@ using .Autograd.Calculus
         backward(L)
 
         @test L.grad == 1.0
-        @test a.grad == b.value
-        @test b.grad == a.value
-        @test c.grad == d.value
-        @test d.grad == c.value
+        @test a.grad == b
+        @test b.grad == a
+        @test c.grad == d
+        @test d.grad == c
         @test e.grad == 1.0
     end
 
-    @testset "Tensor arithmetic" begin
+    @testset "Basic Tensor matrix arithmetic and calculus" begin
         a = Tensor([
             1.0 2.0 3.0;
             4.0 5.0 6.0
@@ -54,8 +54,30 @@ using .Autograd.Calculus
         c = a * b
         backward(c)
 
-        println("Tensor c: ", c)
-        println("Tensor a: ", a)
-        println("Tensor b: ", b)
+        @test c == Tensor([
+            28.0 34.0;
+            64.0 79.0
+        ])
+        @test a.grad == Tensor([
+            5.0 9.0 13.0;
+            5.0 9.0 13.0
+        ])
+        @test b.grad == Tensor([
+            5.0 5.0;
+            7.0 7.0;
+            9.0 9.0
+        ])
+    end
+
+    @testset "Advanced Tensor arithmetic and calculus" begin
+        # TODO
+
+        a = Tensor(1.0)
+        b = Tensor(4.5)
+        c = Tensor(2.0)
+        d = Tensor(3.0)
+        e = Tensor(-2.0)
+
+        @test (a + b * c - d) == 7.0
     end
 end

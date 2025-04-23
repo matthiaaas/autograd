@@ -1,20 +1,20 @@
-mutable struct Linear{W,B} <: Module
+mutable struct Linear <: Module
     in_features::Int
     out_features::Int
 
-    weight::Tensor{W}
-    bias::Union{Tensor{B},Nothing}
+    weight::Tensor{Matrix{Float64}}
+    bias::Union{Tensor{Vector{Float64}},Nothing}
 end
 
 function Linear(in_features::Int, out_features::Int, bias::Bool=true)
-    if bias
-        return Linear{Float64,Float64}(in_features, out_features,
-            Tensor(randn(out_features, in_features)),
-            Tensor(randn(out_features)))
-    else
-        return Linear{Float64,Nothing}(in_features, out_features,
-            Tensor(randn(out_features, in_features)), nothing)
-    end
+    weight = Tensor(randn(out_features, in_features))
+    bias = bias ? Tensor(randn(out_features)) : nothing
+
+    return Linear(in_features, out_features, weight, bias)
 end
 
-Base.show(io::IO, m::Linear) = print(io, "Linear($m.in_features, $m.out_features)")
+(m::Linear)(x::Tensor) = m.weight * x .+ (m.bias !== nothing ? m.bias : 0.0)
+
+parameters(m::Linear) = [m.weight; m.bias]
+
+Base.show(io::IO, m::Linear) = print(io, "Linear($(m.in_features), $(m.out_features))")

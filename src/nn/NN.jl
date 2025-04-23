@@ -10,12 +10,8 @@ abstract type Module end
 
 include("modules/sequential.jl")
 include("modules/linear.jl")
+include("modules/relu.jl")
 
-
-function mse(pred, target)
-    return (pred - target)^2
-end
-
-export Module, Sequential, Linear
+export Module, Sequential, Linear, parameters
 
 end
