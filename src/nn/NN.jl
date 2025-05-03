@@ -12,6 +12,6 @@ include("modules/sequential.jl")
 include("modules/linear.jl")
 include("modules/relu.jl")
 
-export Module, Sequential, Linear, parameters
+export Module, Sequential, Linear, ReLU, parameters
 
 end

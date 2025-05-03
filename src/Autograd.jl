@@ -10,6 +10,6 @@ export Scalar, Tensor, backward
 
 include("nn/NN.jl")
 using .NN
-export Module, Sequential, Linear, parameters
+export Module, Sequential, Linear, ReLU, parameters
 
 end
